@@ -14,9 +14,9 @@ app.get("/", (req, res) => {
 });
 
 // All Customer
-app.get("/customers", (req, res) => {
-  res.json(customers);
-});
+// app.get("/customers", (req, res) => {
+//   res.json(customers);
+// });
 
 /// Route Parameters
 app.get("/customers/:id", (req, res) => {
