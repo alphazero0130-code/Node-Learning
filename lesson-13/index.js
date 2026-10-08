@@ -2,9 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
 import Customer from "./model/Customer.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
 
 const app = express();
 app.use(express.json());
+app.use("/services", serviceRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
