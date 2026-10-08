@@ -1,5 +1,6 @@
 import express from "express";
-import { customers } from "../data/data";
+import { customers } from "../data/data.js";
+import validateCustoemr from "../middleware/validateCustomer.js";
 
 const router = express.Router();
 
@@ -25,3 +26,21 @@ router.get("/:id", (req, res) => {
     });
   }
 });
+
+
+// Validation Middleware
+router.post("/", validateCustoemr, (req, res) => {
+  const newCustomer = {
+    id: customers.length + 1,
+    name: req.body.name.trim(),
+    phone: req.body.phone.trim(),
+  };
+  customers.push(newCustomer);
+
+  res.status(201).json({
+    message: "Success",
+    customer: customers,
+  });
+});
+
+export default router;
