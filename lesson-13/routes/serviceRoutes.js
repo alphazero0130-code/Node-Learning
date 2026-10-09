@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
     const service = await Service.find();
 
     res.json({
-      menubar: "Data found",
+      message: "Data found",
       service: service,
     });
   } catch (error) {
@@ -51,7 +51,7 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    const service = Service.findById(id);
+    const service = await Service.findById(id);
 
     if (!service) {
       return res.status(404).json({
@@ -80,7 +80,7 @@ router.put("/:id", async (req, res) => {
         message: "Invalid service ID",
       });
     }
-    const service = Service.findByIdAndUpdate(
+    const service = await Service.findByIdAndUpdate(
       id,
       {
         serviceName: req.body.serviceName,
@@ -96,7 +96,36 @@ router.put("/:id", async (req, res) => {
     }
     res.json({
       message: "Service updated successfully",
-      customer: service,
+      service: service,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong",
+      error: error,
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+     if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        message: "Invalid service ID",
+      });
+    }
+
+    const service = await Service.findByIdAndDelete(id);
+
+    if (!service) {
+      return res.status(404).json({
+        message: "Service not found",
+      });
+    }
+    res.json({
+      message: "Service Deleted Successfully",
+      service: service,
     });
   } catch (error) {
     res.status(500).json({
