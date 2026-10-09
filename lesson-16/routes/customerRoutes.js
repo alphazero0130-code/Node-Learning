@@ -192,12 +192,12 @@ router.get("/customer", async (req, res) => {
     const { search, status, sortBy } = req.query;
     const filter = {};
 
-    if (search) {
+    if (search) { // http://localhost:3000/customers?search=rahul
       const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       filter.name = { $regex: escapedSearch, $options: "i" }; // "i" - ignores uppercase and lowercase differences. $regex - searches for matching text.
     }
 
-    if (status) {
+    if (status) { // http://localhost:3000/customers?status=active
       if (!["active", "inactive"].includes(status)) {
         return res.status(400).json({
           message: "Status must be active or inactive",
@@ -214,10 +214,10 @@ router.get("/customer", async (req, res) => {
 
     const customers = await Customer.find(filter)
       .sort({ [selectedSort]: selectedSort === "name" ? 1 : -1, _id: 1 })
-      .skip((page - 1) * limit)
+      .skip((page - 1) * limit) // http://localhost:3000/customers?page=2&limit=10
       .limit(limit);
 
-    const totalCustomers = await Customer.countDocuments(filter);
+    const totalCustomers = await Customer.countDocuments(filter); 
 
     res.json({
       message: "Customers fetched successfully",
