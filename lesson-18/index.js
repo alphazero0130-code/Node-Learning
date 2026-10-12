@@ -2,11 +2,18 @@ import express from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
 import customerRoutes from "./routes/customerRoutes.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 app.use(express.json());
 
 app.use("/customers", customerRoutes);
+
+app.use(errorHandler);
+/*
+The order matters. Register your routes first, then the error-handling middleware. \
+When a controller calls next(error), Express skips normal middleware and passes the error to an error handler.
+*/
 
 const startServer = async () => {
   try {

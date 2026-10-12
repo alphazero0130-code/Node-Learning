@@ -1,6 +1,6 @@
 import Customer from "../models/Customer.js";
 
-const getCustomer = async (req, res) => {
+const getCustomer = async (req, res, next) => {
   try {
     const customers = await Customer.find();
 
@@ -9,14 +9,15 @@ const getCustomer = async (req, res) => {
       customers: customers,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Something went wrong",
-      error: error.message,
-    });
+    // res.status(500).json({
+    //   message: "Something went wrong",
+    //   error: error.message,
+    // });
+    next(error);
   }
 };
 
-const createCustomer = async (req, res) => {
+const createCustomer = async (req, res, next) => {
   try {
     const customer = await Customer.create({
       name: req.body.name,
@@ -31,17 +32,24 @@ const createCustomer = async (req, res) => {
     });
   } catch (error) {
     if (error.name === "ValidationError") {
-      return res.status(400).json({
-        message: "Validation Error",
-        error: Object.values(error.errors).map((item) => item.message),
-      });
+      const validationError = new Error("Validation Error");
+      validationError.statusCode = 400;
+      validationError.errors = Object.values(error.errors).map(
+        (item) => item.message
+      );
+      return next(validationError);
+      // return res.status(400).json({
+      //   message: "Validation Error",
+      //   error: Object.values(error.errors).map((item) => item.message),
+      // });
     }
+    next(error);
 
-    res.status(500).json({
-      message: "Failed to create customer",
-      error: error.message,
-    });
+    // res.status(500).json({
+    //   message: "Failed to create customer",
+    //   error: error.message,
+    // });
   }
 };
 
-export default {getCustomer, createCustomer};
+export default { getCustomer, createCustomer };

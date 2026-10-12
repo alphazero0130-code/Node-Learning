@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const allowedFields = ["name", "phone", "email"]; // We explicitly decide which customer fields this API allows the client to update.
+    const allowedFields = ["name", "phone", "email"]; // We explicitly decide which customer fields this API allows the client to update. (This is called an allowlist.)
 
     //Build the update object -> json req to Object
     const updates = {};
